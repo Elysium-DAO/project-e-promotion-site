@@ -65,22 +65,22 @@ header a {
 }
 
 header .discord {
-    background-image: url("./image/icon/discord-idle.png");
+    background-image: url("/image/icon/discord-idle.png");
     :hover {
-        background-image: url("./image/icon/discord-highlight.png");
+        background-image: url("/image/icon/discord-highlight.png");
     }
 }
 
 header .discord:hover {
-    background-image: url("./image/icon/discord-highlight.png");
+    background-image: url("/image/icon/discord-highlight.png");
 }
 
 header .twitter {
-    background-image: url("./image/icon/twitter-idle.png");
+    background-image: url("/image/icon/twitter-idle.png");
 }
 
 header .twitter:hover {
-    background-image: url("./image/icon/twitter-highlight.png");
+    background-image: url("/image/icon/twitter-highlight.png");
 }
 
 body {
