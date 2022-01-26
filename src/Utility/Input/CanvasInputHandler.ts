@@ -24,6 +24,9 @@ class InputHandler {
         window.addEventListener('mousedown', this.OnMouseDown.bind(this));
         window.addEventListener('mouseup', this.OnMouseUp.bind(this));
         window.addEventListener('mousemove', this.OnMouseMove.bind(this));
+
+        window.addEventListener('touchstart', this.OnMouseDown.bind(this), false);
+        window.addEventListener('touchend', this.OnMouseUp.bind(this), false);
     }
 
     private OnMouseDown(e : MouseEvent) {
