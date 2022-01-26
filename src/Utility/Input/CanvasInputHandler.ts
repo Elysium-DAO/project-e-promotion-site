@@ -19,7 +19,8 @@ class InputHandler {
     constructor(webglCanvas: HTMLCanvasElement, eventSystem : EventSystem) {
         this._webglCanvas = webglCanvas;
         this.eventSystem = eventSystem;
-    
+        
+        //document.addEventListener('mouseenter', this.OnMouseMove.bind(this));
         window.addEventListener('mousedown', this.OnMouseDown.bind(this));
         window.addEventListener('mouseup', this.OnMouseUp.bind(this));
         window.addEventListener('mousemove', this.OnMouseMove.bind(this));
@@ -54,7 +55,7 @@ class InputHandler {
 
     private GetMousePosVector(e : MouseEvent) {
         //In order to match canvas coordinate system
-        let clickYPos = this._webglCanvas.height - e.y;
+        let clickYPos = this._webglCanvas.clientHeight - e.y;
         let clickXPos = e.x;
         
         return {x : clickXPos, y : clickYPos};

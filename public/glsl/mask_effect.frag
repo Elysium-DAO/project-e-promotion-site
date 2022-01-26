@@ -3,7 +3,8 @@ precision mediump float;
 uniform float u_time;
 uniform vec4 u_mainColor;
 uniform vec2 u_mousePos;
-uniform int u_isMouseEnable;
+uniform float u_isMouseEnable;
+uniform float u_min_reveal_range;
 uniform int u_textureIdentifier;
 uniform float u_textureLerpValue;
 
@@ -37,9 +38,8 @@ void main() {
     vec4 targetFrontTex = mix(frontTexA, frontTexB, u_textureLerpValue);
     vec4 targetHighlightTex = mix(highlightTexA, highlightTexB, u_textureLerpValue);
 
-    float minRange = 0.75;
     float dist = 1.0 - distance(v_vertex, u_mousePos);
-    float lerpV = smoothstep(minRange, 1.0, dist);
+    float lerpV = smoothstep(u_min_reveal_range, 1.0, dist) * u_isMouseEnable;
     vec4 revealCol = mix(targetFrontTex, targetHighlightTex, lerpV);
     gl_FragColor = revealCol;
 }

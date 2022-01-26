@@ -57,15 +57,16 @@ abstract class WebglCanvas {
 
     // Clip position is -1 to +1
     public ScreenPositionToClipSpace(x : number, y : number) : IntVector2{
-        let scaleX = (x / this._webglDom.width) * 2 - 1;
-        let scaleY = (y / this._webglDom.height) * 2 - 1;
+        let scaleX = (x / this._webglDom.clientWidth) * 2 - 1;
+        let scaleY = (y / this._webglDom.clientHeight) * 2 - 1;
 
+    
         return {x : scaleX, y: scaleY};    
     }
 
     public ClipSpaceToScreenPosition(x : number, y : number) : IntVector2{
-        let scaleX = (x + 1 * 0.5) * this._webglDom.width;
-        let scaleY = (y + 1 * 0.5 ) * this._webglDom.height;
+        let scaleX = (x + 1 * 0.5) * this._webglDom.clientWidth;
+        let scaleY = (y + 1 * 0.5 ) * this._webglDom.clientHeight;
 
         return {x : scaleX, y: scaleY};    
     }

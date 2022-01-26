@@ -25,30 +25,31 @@ class ProjectE extends WebGLCanvas{
     mouseAnimation: MouseAnimation;
 
     public time : number;
-    private _recordTexRotTime: number;
 
     private _FrontTexA : REGL.Texture2D;
     private _HighlightTexA : REGL.Texture2D;
     private _FrontTexB : REGL.Texture2D;
     private _HighlightTexB : REGL.Texture2D;
-    private _identifier : number = 0;
-    private _lerpValue : number = 0;
 
     private _planeVertex : PlaneVertex;
     private _config: ProjectEConfig;
+    private _blackColor : REGL.Vec4;
 
     constructor( config: ProjectEConfig) {
         super(config.webgl_dom);
         this._config = config;
         this.webglUtility = new WebglUtility();
         this.eventSystem = new EventSystem();
+        this._blackColor = [0,0,0,1];
         
         this.maskHighlight = new MaskHighLight(this._webglDom, config);
         this.textAnimation = new TextAnimation(config.comingsoon_dom, "COMING SOON", " . ",  1, 4);
-        this.mouseAnimation = new MouseAnimation(config.mouse_dom, 0.8);
+        this.mouseAnimation = new MouseAnimation(config.mouse_dom, 0.8, this.maskHighlight.IsMobileDevice);
 
         this.inputHandler = new CanvasInputHandler(this._webglDom, this.eventSystem);
         this.eventSystem.ListenToEvent(CustomEventTypes.MouseMoveEvent, this.OnMouseMoveEvent.bind(this));
+        this.eventSystem.ListenToEvent(CustomEventTypes.MouseUpEvent, this.OnMouseUpEvent.bind(this));
+        this.eventSystem.ListenToEvent(CustomEventTypes.MouseDownEvent, this.OnMouseDownEvent.bind(this));
 
         this.InitProcess(config.vertex_path, config.frag_path);
     }
@@ -78,7 +79,6 @@ class ProjectE extends WebGLCanvas{
         this._FrontTexB = this._reglContext.texture({data:textureASet[0], flipY: true});
         this._HighlightTexB = this._reglContext.texture({data:textureASet[1], flipY: true});
 
-        this._recordTexRotTime =  this._config.texture_rotation_time;
         this.UpdatePlaneVertex();
 
         this.reglDrawCommand  = await CreateREGLCommandObj(
@@ -92,6 +92,7 @@ class ProjectE extends WebGLCanvas{
             this._HighlightTexB, 
             this._planeVertex.a_uv, 
             this.maskHighlight.maskTexType.scale,
+            this.maskHighlight.maskTexType.mask_min_reveal_range,
             this._planeVertex.count);
     }
 
@@ -102,7 +103,7 @@ class ProjectE extends WebGLCanvas{
 
             // clear contents of the drawing buffer
             this._reglContext.clear({
-                color: [0, 0, 0, 0],
+                color: this._blackColor,
                 depth: 1
             })
             
@@ -111,57 +112,17 @@ class ProjectE extends WebGLCanvas{
                 position : this._planeVertex.a_position,
                 time : time,
                 mousePos : [clipPos.x, clipPos.y],
-                isMouseEnable: 1,
-                textureIdentifier : this._identifier,
-                textureLerpValue: this._lerpValue,
+                isMouseEnable: this.mouseAnimation.TouchVisibility,
+                textureIdentifier : this.maskHighlight.Identifier,
+                textureLerpValue: this.maskHighlight.LerpValue,
             });
 
             this.textAnimation.OnUpdate(time);
             this.mouseAnimation.OnUpdate(time);
-            this.UpdateMaskHighLight(time);
+            this.maskHighlight.OnUpdate(time, this._FrontTexA, this._HighlightTexA, this._FrontTexB, this._HighlightTexB);
 
             this.time = time;
         });
-    }
-
-    private UpdateMaskHighLight(time: number) {
-
-        if (time < this._recordTexRotTime) {
-            //By pass the first rotation
-            if (this.maskHighlight.rotateCount == 0) {
-                this._lerpValue = 1;
-                return;
-            }
-            this._lerpValue = Clamp(
-                NormalizeByRange(time, this._recordTexRotTime - this._config.texture_rotation_time, this._recordTexRotTime - this._config.texture_transition_time), 
-                0, 1);
-
-            if (this._identifier == 1)
-                this._lerpValue = 1 - this._lerpValue;   
-            
-            return;
-        }
-
-        this._recordTexRotTime = time + this._config.texture_rotation_time;
-
-        let currentIndex = this.maskHighlight.IncrementIndex();
-        let currentTextureSet = this.maskHighlight.GetPairTexture(currentIndex);
-
-        this._identifier = this.maskHighlight.rotateCount % 2;
-
-        // console.log(`identifier ${this._identifier}, index ${currentIndex}, rotation ${this.maskHighlight.rotateCount}`);
-
-        if (this._identifier == 0) {
-            this._FrontTexB.subimage(currentTextureSet[0]);
-            this._HighlightTexB.subimage(currentTextureSet[1]);
-            return;
-        }
-
-        if (this._identifier == 1) {
-            this._FrontTexA.subimage(currentTextureSet[0]);
-            this._HighlightTexA.subimage(currentTextureSet[1]);
-            return;
-        }
     }
 
     //Resize texture to its aspect ratio
@@ -185,7 +146,15 @@ class ProjectE extends WebGLCanvas{
         this.maskHighlight.OnMouseMoveEvent(e.mousePosition.x, e.mousePosition.y);
 
         let mouseOffset = 40;
-        this.mouseAnimation.OnMouseMoveEvent(e.mousePosition.x + mouseOffset, this._webglDom.height - e.mousePosition.y + mouseOffset); //Css Y pos offset
+        this.mouseAnimation.OnMouseMoveEvent(e.mousePosition.x + mouseOffset, this._webglDom.clientHeight - e.mousePosition.y + mouseOffset); //Css Y pos offset
+    }
+
+    private OnMouseDownEvent(e: any) {
+        this.mouseAnimation.OnMouseDownEvent();
+    }
+
+    private OnMouseUpEvent(e: any) {
+        this.mouseAnimation.OnMouseUpEvent(this.time);
     }
     //#endregion
 }

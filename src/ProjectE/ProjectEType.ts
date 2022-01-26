@@ -1,6 +1,5 @@
 export interface ProjectEConfig {
     mouse_dom : string,
-    mask_radius : number,
 
     comingsoon_dom : string,
     webgl_dom : string,
@@ -15,12 +14,8 @@ export interface ProjectEConfig {
     mobile_textures: MaskTextureType
 }
 
-export interface VertexAttributeType {
-    time : number,// Vector2    
-    mainColor : number[],
-}
-
 export interface MaskTextureType {
+    mask_min_reveal_range : number,
     front_textures : string[],
     highlight_textures: string[],
     scale: number,

@@ -39,9 +39,9 @@ p.coming_soon {
     font-family: Cardo-Regular, Arial, Helvetica, sans-serif;
     min-width: 11.5rem;
 
-    @media (max-width: 750px) { 
+    @media only screen and (max-width: 768px) { 
         font-size: 1.3rem;
-        min-width: 13rem;
+        min-width: 13.5rem;
     }
 }
 
@@ -52,7 +52,7 @@ header {
     justify-content: right;
     flex-wrap:wrap;
     text-align: right;
-    margin-top: 2rem;
+    padding-top: 2rem;
 }
 
 header a {
@@ -66,8 +66,8 @@ header a {
 
 header a img {
     width: 1.8rem;
-    @media (max-width: 750px) { 
-        width: 3rem;
+    @media only screen and (max-width: 768px){ 
+        width: 2rem;
     }
 }
 

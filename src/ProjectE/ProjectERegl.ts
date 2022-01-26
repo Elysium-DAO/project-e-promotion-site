@@ -1,5 +1,4 @@
 import REGL, {Regl} from 'regl';
-import {VertexAttributeType} from './ProjectEType';
 
 export interface CustomReglPropType {
     position : number[][],
@@ -22,9 +21,8 @@ export function ExecuteREGLCommand(regl : Regl, drawCommand : REGL.DrawCommand, 
 }
 
 export function CreateREGLCommandObj(regl : Regl, vertex : string, fragment : string, 
-    noiseTex: HTMLImageElement,
-    frontTexA : REGL.Texture, highlightTexA: REGL.Texture, frontTexB : REGL.Texture, highlightTexB: REGL.Texture,
-    a_uv : number[][], scale : number, vertex_count: number
+    noiseTex: HTMLImageElement, frontTexA : REGL.Texture, highlightTexA: REGL.Texture, frontTexB : REGL.Texture, highlightTexB: REGL.Texture,
+    a_uv : number[][], scale : number, minRevealRange : number, vertex_count: number
     ) {
     return regl({
         frag: fragment,
@@ -44,6 +42,7 @@ export function CreateREGLCommandObj(regl : Regl, vertex : string, fragment : st
 
             u_front_tex_b : frontTexB,
             u_highlight_tex_b : highlightTexB,
+            u_min_reveal_range: minRevealRange,
 
             u_time: regl.prop<CustomReglPropType, "time">("time"),
             u_mousePos: regl.prop<CustomReglPropType, "mousePos">("mousePos"),
