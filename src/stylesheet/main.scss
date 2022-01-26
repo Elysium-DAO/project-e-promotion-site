@@ -17,14 +17,17 @@ html, body {
 }
 
 div .logo_image {
-    width: 55rem;
-    max-width: 95%;
+    width: 48vw;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     margin: 0px 0px;
     padding: 0px 0px;
+
+    @media only screen and (max-width: 768px){ 
+        width: 95vw;
+    }
 }
 
 p.coming_soon {
