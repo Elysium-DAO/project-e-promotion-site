@@ -30,50 +30,58 @@ div .logo_image {
     }
 }
 
-p.coming_soon {
+.coming_soon {
     color : white;
-    font-size: 1rem;
     position: absolute;
-    top: 78%;
-    left: 51%;
+    top: 79%;
+    left: 50%;
     transform: translate(-50%, -50%);
     margin: 0px 0px;
     padding: 0px 0px;
     font-family: Cardo-Regular, Arial, Helvetica, sans-serif;
-    min-width: 11.5rem;
 
-    @media only screen and (max-width: 768px) { 
-        font-size: 1.3rem;
-        min-width: 13.5rem;
+    @media only screen and (max-width: 768px){ 
+        width: 4.7rem;
+        top: 69%;
     }
 }
 
 header {
-    display:flex;
     position: absolute;
-    width: 99%;
-    justify-content: right;
-    flex-wrap:wrap;
-    text-align: right;
-    padding-top: 2rem;
+    right : 18px;
+    width : 8rem;
+    height: 3rem;
+    text-align: center;
 }
 
 header a {
-    margin: 0rem 1rem;
+    float: right;
 
-
-    :hover {
-        filter: invert(43%) sepia(41%) saturate(1440%) hue-rotate(155deg) brightness(106%) contrast(102%);
-    }
-}
-
-header a img {
+    margin: 30px 7px;
     width: 1.8rem;
-    @media only screen and (max-width: 768px){ 
-        width: 2rem;
+    height: 1.8rem;
+
+    background-repeat:no-repeat;
+}
+
+header .discord {
+    background-image: url("./image/icon/discord-idle.png");
+    :hover {
+        background-image: url("./image/icon/discord-highlight.png");
     }
 }
 
+header .discord:hover {
+    background-image: url("./image/icon/discord-highlight.png");
+}
+
+header .twitter {
+    background-image: url("./image/icon/twitter-idle.png");
+}
+
+header .twitter:hover {
+    background-image: url("./image/icon/twitter-highlight.png");
+}
 
 body {
     cursor: none;

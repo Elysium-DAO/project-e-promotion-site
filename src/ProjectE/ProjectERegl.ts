@@ -5,7 +5,6 @@ export interface CustomReglPropType {
     time : number,
     mousePos : number[],
     isMouseEnable : number,
-    textureIdentifier : number,
     textureLerpValue : number,
 }
 
@@ -15,7 +14,6 @@ export function ExecuteREGLCommand(regl : Regl, drawCommand : REGL.DrawCommand, 
         time : (vertexAttrType.time),
         mousePos : (vertexAttrType.mousePos),
         isMouseEnable : vertexAttrType.isMouseEnable,
-        textureIdentifier : vertexAttrType.textureIdentifier,
         textureLerpValue : vertexAttrType.textureLerpValue,    
     });
 }
@@ -48,7 +46,6 @@ export function CreateREGLCommandObj(regl : Regl, vertex : string, fragment : st
             u_mousePos: regl.prop<CustomReglPropType, "mousePos">("mousePos"),
             u_isMouseEnable: regl.prop<CustomReglPropType, "isMouseEnable">("isMouseEnable"),
 
-            u_textureIdentifier: regl.prop<CustomReglPropType, "textureIdentifier">("textureIdentifier"),
             u_textureLerpValue: regl.prop<CustomReglPropType, "textureLerpValue">("textureLerpValue"),
         },
 

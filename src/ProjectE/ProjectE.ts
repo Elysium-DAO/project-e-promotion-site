@@ -21,7 +21,7 @@ class ProjectE extends WebGLCanvas{
     eventSystem : EventSystem;
     
     maskHighlight : MaskHighLight;
-    textAnimation: TextAnimation;
+    //textAnimation: TextAnimation;
     mouseAnimation: MouseAnimation;
 
     public time : number;
@@ -34,6 +34,7 @@ class ProjectE extends WebGLCanvas{
     private _planeVertex : PlaneVertex;
     private _config: ProjectEConfig;
     private _blackColor : REGL.Vec4;
+    private _clipMousePos = [0,0];
 
     constructor( config: ProjectEConfig) {
         super(config.webgl_dom);
@@ -43,7 +44,7 @@ class ProjectE extends WebGLCanvas{
         this._blackColor = [0,0,0,1];
         
         this.maskHighlight = new MaskHighLight(this._webglDom, config);
-        this.textAnimation = new TextAnimation(config.comingsoon_dom, "COMING SOON", " . ",  1, 4);
+        //this.textAnimation = new TextAnimation(config.comingsoon_dom, "COMING SOON", " . ",  1, 4);
         this.mouseAnimation = new MouseAnimation(config.mouse_dom, 0.8, this.maskHighlight.IsMobileDevice);
 
         this.inputHandler = new CanvasInputHandler(this._webglDom, this.eventSystem);
@@ -113,11 +114,10 @@ class ProjectE extends WebGLCanvas{
                 time : time,
                 mousePos : [clipPos.x, clipPos.y],
                 isMouseEnable: this.mouseAnimation.TouchVisibility,
-                textureIdentifier : this.maskHighlight.Identifier,
                 textureLerpValue: this.maskHighlight.LerpValue,
             });
 
-            this.textAnimation.OnUpdate(time);
+            //this.textAnimation.OnUpdate(time);
             this.mouseAnimation.OnUpdate(time);
             this.maskHighlight.OnUpdate(time, this._FrontTexA, this._HighlightTexA, this._FrontTexB, this._HighlightTexB);
 

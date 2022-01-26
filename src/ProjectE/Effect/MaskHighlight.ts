@@ -33,7 +33,7 @@ export class MaskHighLight {
             input_enable: (!this.IsMobileDevice)
         }
 
-        console.log("Is Mobile Device "+ this.IsMobileDevice);
+        // console.log("Is Mobile Device "+ this.IsMobileDevice);
     }
 
     public async CacheMaskTexture() {

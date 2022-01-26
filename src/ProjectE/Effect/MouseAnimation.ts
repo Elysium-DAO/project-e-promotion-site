@@ -30,6 +30,8 @@ export default class MouseAnimation {
                 this._touchVisibilityRecordTime - this._touchVisibilityFadeTime, 
                 this._touchVisibilityRecordTime
             );
+
+            this.TouchVisibility = Clamp(this.TouchVisibility, 0 , 1);
         }
     }
 

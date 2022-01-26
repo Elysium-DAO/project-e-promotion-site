@@ -1,11 +1,9 @@
-precision mediump float;
+precision highp float;
 
 uniform float u_time;
-uniform vec4 u_mainColor;
 uniform vec2 u_mousePos;
 uniform float u_isMouseEnable;
 uniform float u_min_reveal_range;
-uniform int u_textureIdentifier;
 uniform float u_textureLerpValue;
 
 uniform sampler2D u_front_tex_a;
