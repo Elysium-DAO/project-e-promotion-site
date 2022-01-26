@@ -1,0 +1,26 @@
+{
+    "mouse_dom": "#cursor",
+    "mask_radius" : 10,
+
+    "comingsoon_dom" : "p.coming_soon",
+    "webgl_dom" : "#webgl_canvas",
+    "vertex_path" : "./glsl/mask_effect.vert",
+    "frag_path" : "./glsl/mask_effect.frag",
+    "noise_tex_path" : "./image/texture/cloud_transition-min.jpg",
+
+    "texture_rotation_time" : 4,
+    "texture_transition_time" : 2,
+
+    "desktop_textures" : {
+        "scale" : 1,
+        "front_textures" : ["./image/desktop/Silhouette_composite 2-min.jpg"],
+        "highlight_textures" : ["./image/desktop/Silhouette_composite_color 1-min.jpg"],
+        "count" : 1
+    },
+    "mobile_textures" : {
+        "scale" : 1,
+        "front_textures" : ["./image/mobile/Angel Silhouette 4-min.jpg", "./image/mobile/Demon Silhouette 3-min.jpg", "./image/mobile/Elf Silhouette 1-min.jpg"],
+        "highlight_textures" : ["./image/mobile/Angel Silhouette 2 1-min.jpg", "./image/mobile/Demon Silhouette 2 1-min.jpg", "./image/mobile/Elf Silhouette 2 1-min.jpg"],
+        "count" : 3
+    }
+}

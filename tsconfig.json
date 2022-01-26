@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./docs/builds/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        "preserveConstEnums": true,
+        "module": "commonjs",
+        "target": "es6",
+        "rootDir": "./src"
+    }
+}

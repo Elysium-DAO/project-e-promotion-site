@@ -1,0 +1,28 @@
+{
+  "name": "P_E_Promotion",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "./node_modules/.bin/snowpack dev",
+    "build": "./node_modules/.bin/snowpack build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gl-matrix": "^3.4.3",
+    "node-sass": "^7.0.1",
+    "regl": "^2.1.0",
+    "snowpack": "^3.8.8",
+    "source-map-loader": "^3.0.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "@snowpack/plugin-sass": "^1.4.0",
+    "@snowpack/plugin-typescript": "^1.2.1",
+    "@types/estree": "^0.0.50",
+    "typescript-collections": "^1.3.3"
+  }
+}

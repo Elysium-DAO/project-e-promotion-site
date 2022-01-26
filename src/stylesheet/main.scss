@@ -1,0 +1,96 @@
+@font-face {
+    font-family: Cardo-Regular;
+    src: url(./fontstyle/Cardo/Cardo-Regular.ttf);
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(1, 1, 1, 1);
+    margin: 0px;
+    padding: 0px;
+}
+
+#webgl_canvas {
+    width: 100%;
+    height: 100%;
+}
+
+div .logo_image {
+    width: 55rem;
+    max-width: 95%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0px 0px;
+    padding: 0px 0px;
+}
+
+p.coming_soon {
+    color : white;
+    font-size: 1rem;
+    position: absolute;
+    top: 78%;
+    left: 51%;
+    transform: translate(-50%, -50%);
+    margin: 0px 0px;
+    padding: 0px 0px;
+    font-family: Cardo-Regular, Arial, Helvetica, sans-serif;
+    min-width: 11.5rem;
+
+    @media (max-width: 750px) { 
+        font-size: 1.3rem;
+        min-width: 13rem;
+    }
+}
+
+header {
+    display:flex;
+    position: absolute;
+    width: 99%;
+    justify-content: right;
+    flex-wrap:wrap;
+    text-align: right;
+    margin-top: 2rem;
+}
+
+header a {
+    margin: 0rem 1rem;
+
+
+    :hover {
+        filter: invert(43%) sepia(41%) saturate(1440%) hue-rotate(155deg) brightness(106%) contrast(102%);
+    }
+}
+
+header a img {
+    width: 1.8rem;
+    @media (max-width: 750px) { 
+        width: 3rem;
+    }
+}
+
+
+body {
+    cursor: none;
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+
+    * {
+      cursor: inherit;
+    }
+  }
+#cursor {
+    position: absolute;
+    left: -50px;
+    top: -50px;
+    will-change: transform;
+    transform: translate(-999px, -999px);
+    pointer-events: none;
+  
+    img {
+      will-change: transform;
+      transition: transform .1s linear;
+    }
+  }
