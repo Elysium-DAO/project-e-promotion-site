@@ -1,6 +1,6 @@
 import {MaskTextureType, ProjectEConfig, InputInteractionType} from '../ProjectEType';
 import {IsMobileDevice, GetImagePromise, NormalizeByRange, Lerp, Clamp} from '../../Utility/UtilityMethod';
-import REGL from 'regl';
+import REGL, { Framebuffer,Regl } from 'regl';
 
 export class MaskHighLight {
 
@@ -20,6 +20,7 @@ export class MaskHighLight {
     private _recordTexRotTime: number;
     public Identifier : number = 0;
     public LerpValue : number = 0;
+
 
     constructor(webgl:HTMLCanvasElement, config: ProjectEConfig) {
         this._config = config;

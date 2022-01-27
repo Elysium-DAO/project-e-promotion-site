@@ -1,8 +1,8 @@
 import WebGLCanvas from '../Utility/WebGL/WebglCanvas';
 import WebglUtility from '../Utility/WebGL/WebglUtility';
 import {ProjectEConfig} from './ProjectEType';
-import REGL, {Regl} from 'regl';
-import {CreateREGLCommandObj, ExecuteREGLCommand} from './ProjectERegl';
+import REGL, {Framebuffer, Framebuffer2D, Regl, Texture2D} from 'regl';
+import {CreateCanvasREGLCommand, CreateFrameBufferCommand, CreateRecordBufferCommand, CustomReglPropType, ExecuteREGLCommand} from './ProjectERegl';
 import CanvasInputHandler from '../Utility/Input/CanvasInputHandler';
 import EventSystem from '../Utility/EventSystem';
 import {NormalizeByRange, Lerp, Clamp} from '../Utility/UtilityMethod';
@@ -14,8 +14,13 @@ import { PlaneVertex, CustomEventTypes } from '../Utility/UniversalType';
 
 class ProjectE extends WebGLCanvas{
     webglUtility : WebglUtility;
-    reglDrawCommand : REGL.DrawCommand;
+    reglFrameBufferCommand : REGL.DrawCommand;
+    reglCanvasCommand : REGL.DrawCommand;
+    reglRecordEaseCommand : REGL.DrawCommand;
+
     reglFrame : REGL.Cancellable;
+    mouseTrackFrameBuffer : Framebuffer2D;
+    frameBufferTex : Texture2D;
 
     inputHandler : CanvasInputHandler;
     eventSystem : EventSystem;
@@ -35,6 +40,7 @@ class ProjectE extends WebGLCanvas{
     private _config: ProjectEConfig;
     private _blackColor : REGL.Vec4;
     private _clipMousePos = [0,0];
+    private _aspectRatio = 1;
 
     constructor( config: ProjectEConfig) {
         super(config.webgl_dom);
@@ -52,20 +58,30 @@ class ProjectE extends WebGLCanvas{
         this.eventSystem.ListenToEvent(CustomEventTypes.MouseUpEvent, this.OnMouseUpEvent.bind(this));
         this.eventSystem.ListenToEvent(CustomEventTypes.MouseDownEvent, this.OnMouseDownEvent.bind(this));
 
-        this.InitProcess(config.vertex_path, config.frag_path);
+        this.InitProcess(config);
     }
 
-    async InitProcess(vertexFilePath : string, fragmentFilePath : string) {
+    async InitProcess(config: ProjectEConfig) {
         await this.maskHighlight.CacheMaskTexture();
-        await this.SetupWebglPipeline(vertexFilePath, fragmentFilePath);
+        await this.SetupWebglPipeline(config);
 
         //Draw the image in first frame
         this.DrawREGLCavnas();
     }
 
-    async SetupWebglPipeline(vertexFilePath : string, fragmentFilePath : string) {
+    async SetupWebglPipeline(config: ProjectEConfig) {
         this._reglContext  = await this.CreatREGLCanvas (this._webglDom);        
-        let glslSetting = await this.webglUtility.PrepareREGLShader(vertexFilePath, fragmentFilePath);
+        let maskMaterial = await this.webglUtility.PrepareREGLShader(config.vertex_path, config.mask_effect_frag_path);
+        let easeMaterial = await this.webglUtility.PrepareREGLShader(config.vertex_path, config.ease_effect_frag_path);
+        let recordEaseMaterial = await this.webglUtility.PrepareREGLShader(config.vertex_path, config.ease_effect_record_frag_path);
+
+        this.frameBufferTex = this._reglContext.texture({radius: 128});
+
+        this.mouseTrackFrameBuffer = this._reglContext.framebuffer({
+            radius: 128,
+            depthStencil: false,
+        });
+
         this._planeVertex = this.webglUtility.GetPlaneVertex();
 
         let textureASet = this.maskHighlight.GetPairTexture(0);
@@ -82,10 +98,11 @@ class ProjectE extends WebGLCanvas{
 
         this.UpdatePlaneVertex();
 
-        this.reglDrawCommand  = await CreateREGLCommandObj(
+        this.reglCanvasCommand  = await CreateCanvasREGLCommand(
             this._reglContext,
-            glslSetting.vertex_shader, 
-            glslSetting.fragment_shader,
+            this.mouseTrackFrameBuffer,
+            maskMaterial.vertex_shader, 
+            maskMaterial.fragment_shader,
             this.maskHighlight._noise_texture,
             this._FrontTexA, 
             this._HighlightTexA, 
@@ -95,27 +112,64 @@ class ProjectE extends WebGLCanvas{
             this.maskHighlight.maskTexType.scale,
             this.maskHighlight.maskTexType.mask_min_reveal_range,
             this._planeVertex.count);
+
+        this.reglFrameBufferCommand = await CreateFrameBufferCommand(
+            this._reglContext,
+            this.mouseTrackFrameBuffer,
+            this.frameBufferTex,
+            maskMaterial.vertex_shader, 
+            easeMaterial.fragment_shader,
+            this.maskHighlight._noise_texture,
+            this._planeVertex.a_uv, 
+            this.maskHighlight.maskTexType.scale,
+            this.maskHighlight.maskTexType.mask_min_reveal_range,
+            this._planeVertex.count);
     }
 
     DrawREGLCavnas() {
+        let commandCommand : CustomReglPropType = {
+            position : this._planeVertex.a_position,
+            time : 0,
+            mousePos : [-1, -1],
+            isMouseEnable: this.mouseAnimation.TouchVisibility,
+            textureLerpValue: this.maskHighlight.LerpValue,
+        }
+
         this._reglContext.frame(({time}) => {
 
             let clipPos = this.ScreenPositionToClipSpace(this.maskHighlight.inputInteractionType.mouse_screenpos_x, this.maskHighlight.inputInteractionType.mouse_screenpos_y);
+            let self = this;
 
             // clear contents of the drawing buffer
             this._reglContext.clear({
                 color: this._blackColor,
                 depth: 1
-            })
-            
-            ExecuteREGLCommand(this._reglContext, this.reglDrawCommand, 
-            {
-                position : this._planeVertex.a_position,
-                time : time,
-                mousePos : [clipPos.x, clipPos.y],
-                isMouseEnable: this.mouseAnimation.TouchVisibility,
-                textureLerpValue: this.maskHighlight.LerpValue,
             });
+
+            commandCommand.position = this._planeVertex.a_position;
+            commandCommand.time = time;
+            commandCommand.mousePos = [clipPos.x, clipPos.y];
+            commandCommand.isMouseEnable = this.mouseAnimation.TouchVisibility;
+            commandCommand.textureLerpValue = this.maskHighlight.LerpValue;
+
+            ExecuteREGLCommand(self._reglContext, self.reglFrameBufferCommand, commandCommand);
+
+            self.mouseTrackFrameBuffer.use(function() {
+                // self._reglContext.clear({color: self._blackColor, depth : 1});
+
+                //ExecuteREGLCommand(self._reglContext, self.reglFrameBufferCommand, commandCommand);
+                
+                self.frameBufferTex({
+                    width: 128,
+                    height:128,
+                    copy: true,
+                    flipY: true
+                });
+            });
+            // self.frameBufferTex.subimage(self._reglContext.read());
+
+            //Draw to Canvas
+            ExecuteREGLCommand(this._reglContext, this.reglCanvasCommand, commandCommand);
 
             //this.textAnimation.OnUpdate(time);
             this.mouseAnimation.OnUpdate(time);
@@ -131,9 +185,9 @@ class ProjectE extends WebGLCanvas{
         
         let currentAspectRatio = this._webglDom.width / this._webglDom.height;
         let originalAspectRatio = this._FrontTexA.width / this._FrontTexA.height;
-        let aspectRatio = originalAspectRatio / currentAspectRatio;
+        this._aspectRatio = originalAspectRatio / currentAspectRatio;
 
-        this._planeVertex = this.webglUtility.ApplyAspectRatioToPlane(this.webglUtility.GetPlaneVertex(), aspectRatio);
+        this._planeVertex = this.webglUtility.ApplyAspectRatioToPlane(this.webglUtility.GetPlaneVertex(), this._aspectRatio);
     }
 
     protected AutoSetCanvasSize() {

@@ -33,6 +33,8 @@ abstract class WebglCanvas {
 
         return regl.default({
             canvas : webglDom,
+            extensions: 'OES_texture_float',
+
             //attributes : {preserveDrawingBuffer : true}
         });
     }

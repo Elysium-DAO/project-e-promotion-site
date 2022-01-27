@@ -4,7 +4,9 @@ export interface ProjectEConfig {
     comingsoon_dom : string,
     webgl_dom : string,
     vertex_path : string,
-    frag_path : string,
+    mask_effect_frag_path : string,
+    ease_effect_frag_path : string,
+    ease_effect_record_frag_path : string,
     noise_tex_path: string,
     
     texture_rotation_time: number,

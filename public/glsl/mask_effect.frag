@@ -11,6 +11,7 @@ uniform sampler2D u_highlight_tex_a;
 uniform sampler2D u_front_tex_b;
 uniform sampler2D u_highlight_tex_b;
 
+uniform sampler2D u_reveal_map_tex;
 uniform sampler2D u_noise_tex;
 
 varying vec2 v_uv;  
@@ -18,7 +19,9 @@ varying vec2 v_vertex;
 
 void main() {
     vec2 uv = vec2(v_uv.x, v_uv.y);
+    vec2 centeruv = vec2(((uv.x - 0.5) * 0.3) + 0.5, uv.y);
     vec4 returnColor = vec4(v_uv.x, v_uv.y, 0.0, 1.0);
+    vec4 easeMapTex = texture2D(u_reveal_map_tex, centeruv);
 
     float scaleLerpValue = (u_textureLerpValue * 2.0) - 1.0;
     float noiseStr = clamp( (-4.5 * pow(scaleLerpValue, 2.0))+ 4.3, 0.0, 1.0);
@@ -39,5 +42,8 @@ void main() {
     float dist = 1.0 - distance(v_vertex, u_mousePos);
     float lerpV = smoothstep(u_min_reveal_range, 1.0, dist) * u_isMouseEnable;
     vec4 revealCol = mix(targetFrontTex, targetHighlightTex, lerpV);
-    gl_FragColor = revealCol;
+
+    //gl_FragColor = vec4(lerpV, lerpV, 0.0, 1.0);
+    //gl_FragColor = revealCol;
+    gl_FragColor = easeMapTex;
 }
