@@ -5,6 +5,8 @@ uniform vec2 u_mousePos;
 uniform float u_isMouseEnable;
 uniform float u_min_reveal_range;
 uniform float u_textureLerpValue;
+uniform float u_tex_aspect_ratio;
+uniform float u_is_mobile;
 
 uniform sampler2D u_front_tex_a;
 uniform sampler2D u_highlight_tex_a;
@@ -19,7 +21,7 @@ varying vec2 v_vertex;
 
 void main() {
     vec2 uv = vec2(v_uv.x, v_uv.y);
-    vec2 centeruv = vec2(((uv.x - 0.5) * 0.3) + 0.5, uv.y);
+    vec2 centeruv = vec2(((uv.x - 0.5) * u_tex_aspect_ratio) + 0.5, uv.y);
     vec4 returnColor = vec4(v_uv.x, v_uv.y, 0.0, 1.0);
     vec4 easeMapTex = texture2D(u_reveal_map_tex, centeruv);
 
@@ -40,10 +42,11 @@ void main() {
     vec4 targetHighlightTex = mix(highlightTexA, highlightTexB, u_textureLerpValue);
 
     float dist = 1.0 - distance(v_vertex, u_mousePos);
-    float lerpV = smoothstep(u_min_reveal_range, 1.0, dist) * u_isMouseEnable;
-    vec4 revealCol = mix(targetFrontTex, targetHighlightTex, lerpV);
+    float mousePosLerp = smoothstep(u_min_reveal_range, 1.0, dist) * u_isMouseEnable;
+    float lerpMix = mix(easeMapTex.x, mousePosLerp, u_is_mobile);
+    vec4 revealCol = mix(targetFrontTex, targetHighlightTex, lerpMix);
 
-    //gl_FragColor = vec4(lerpV, lerpV, 0.0, 1.0);
-    //gl_FragColor = revealCol;
-    gl_FragColor = easeMapTex;
+    //gl_FragColor = vec4(mousePosLerp, mousePosLerp, mousePosLerp, 1.0);
+    gl_FragColor = revealCol;
+    //gl_FragColor = easeMapTex;
 }

@@ -4,9 +4,11 @@
     "comingsoon_dom" : "p.coming_soon",
     "webgl_dom" : "#webgl_canvas",
     "vertex_path" : "./glsl/mask_effect.vert",
-    "frag_path" : "./glsl/mask_effect.frag",
-    "noise_tex_path" : "./image/texture/cloud_transition-min.jpg",
+    "mask_effect_frag_path" : "./glsl/mask_effect.frag",
+    "ease_effect_frag_path" : "./glsl/ease_effect.frag",
+    "ease_effect_record_frag_path" : "./glsl/ease_record_effect.frag",
 
+    "noise_tex_path" : "./image/texture/cloud_transition-min.jpg",
     "texture_rotation_time" : 6,
     "texture_transition_time" : 4,
 
