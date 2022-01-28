@@ -58,7 +58,7 @@ class ProjectE extends WebGLCanvas{
         this.eventSystem.ListenToEvent(CustomEventTypes.MouseUpEvent, this.OnMouseUpEvent.bind(this));
         this.eventSystem.ListenToEvent(CustomEventTypes.MouseDownEvent, this.OnMouseDownEvent.bind(this));
 
-        this.LoadGIFLoad();
+        //this.LoadGIFLoad();
         this.InitProcess(config);
     }
 
