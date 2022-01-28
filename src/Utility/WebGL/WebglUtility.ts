@@ -59,9 +59,7 @@ class WebglUtility {
         this.textureCache.setValue(path, texture);
 
         return texture;         
-    }
-
-    
+    }    
 }
 
 export default WebglUtility;

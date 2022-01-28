@@ -5,7 +5,7 @@ import REGL, {Framebuffer, Framebuffer2D, Regl, Texture2D} from 'regl';
 import {CreateCanvasREGLCommand, CreateFrameBufferCommand, CustomReglPropType, ExecuteREGLCommand} from './ProjectERegl';
 import CanvasInputHandler from '../Utility/Input/CanvasInputHandler';
 import EventSystem from '../Utility/EventSystem';
-import {NormalizeByRange, Lerp, Clamp} from '../Utility/UtilityMethod';
+import {NormalizeByRange, Lerp, Clamp, GetImagePromise} from '../Utility/UtilityMethod';
 
 import TextAnimation from './Effect/TextAnimation';
 import MouseAnimation from './Effect/MouseAnimation';
@@ -58,6 +58,7 @@ class ProjectE extends WebGLCanvas{
         this.eventSystem.ListenToEvent(CustomEventTypes.MouseUpEvent, this.OnMouseUpEvent.bind(this));
         this.eventSystem.ListenToEvent(CustomEventTypes.MouseDownEvent, this.OnMouseDownEvent.bind(this));
 
+        this.LoadGIFLoad();
         this.InitProcess(config);
     }
 
@@ -198,6 +199,14 @@ class ProjectE extends WebGLCanvas{
     protected AutoSetCanvasSize() {
         super.AutoSetCanvasSize();
         this.UpdatePlaneVertex();
+    }
+
+    private LoadGIFLoad() {
+        let gifPath = "./image/Project_E_logo.gif";
+        let logoDom : HTMLImageElement = document.querySelector(".logo_image");
+
+        //let gif = await GetImagePromise(gifPath);
+        logoDom.src = gifPath;
     }
 
     //#region Event
