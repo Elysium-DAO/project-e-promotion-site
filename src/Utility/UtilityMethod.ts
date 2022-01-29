@@ -86,7 +86,6 @@ export function GetImageOnTheFly(imagePath : string, oncompleteCallback : () => 
 
     const im = new Image();
     im.crossOrigin = "anonymous";
-    im.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
     im.src = imagePath;
 
     im.onload = () => {

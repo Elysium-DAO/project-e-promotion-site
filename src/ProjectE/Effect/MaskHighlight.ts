@@ -7,8 +7,8 @@ export class MaskHighLight {
     currentIndex = 0;
     rotateCount = 0;
 
-    _front_textures : HTMLImageElement[];
-    _highlight_textures : HTMLImageElement[];
+    _front_textures : HTMLImageElement[] = [];
+    _highlight_textures : HTMLImageElement[] = [];
     _noise_texture : HTMLImageElement;
     _config: ProjectEConfig;
     
@@ -20,9 +20,6 @@ export class MaskHighLight {
     private _recordTexRotTime: number;
     public Identifier : number = 0;
     public LerpValue : number = 0;
-
-    private _loadingImageCount = 0;
-    public LoadComplete : boolean = false;
 
     constructor(webgl:HTMLCanvasElement, config: ProjectEConfig) {
         this._config = config;
@@ -39,17 +36,24 @@ export class MaskHighLight {
         // console.log("Is Mobile Device "+ this.IsMobileDevice);
     }
 
-    public CacheMaskTexture() {
+    public async CacheMaskTexture() {
         this.maskTexType = (this.IsMobileDevice) ? this._config.mobile_textures : this._config.desktop_textures;
+        let texturePromiseArray : Promise<HTMLImageElement>[] = [];
 
-        this._noise_texture = this.LoadTexture(this._config.noise_tex_path);
-
-        this._front_textures = [];
-        this._highlight_textures = [];
+        texturePromiseArray.push(GetImagePromise(this._config.noise_tex_path));
 
         for (let i = 0; i < this.maskTexType.count; i++) {
-            this._front_textures.push(this.LoadTexture(this.maskTexType.front_textures[i]));
-            this._highlight_textures.push(this.LoadTexture(this.maskTexType.highlight_textures[i])); 
+            texturePromiseArray.push(GetImagePromise(this.maskTexType.front_textures[i]));
+            texturePromiseArray.push(GetImagePromise(this.maskTexType.highlight_textures[i]));     
+        }
+
+        let textureArray = await this.LoadTextures(texturePromiseArray);
+        
+        this._noise_texture = textureArray[0];
+        for (let i = 0; i < this.maskTexType.count; i++) {
+            let index = (i * 2) + 1;
+            this._front_textures.push(textureArray[index] );
+            this._highlight_textures.push(textureArray[index + 1]);     
         }
     }
 
@@ -114,14 +118,9 @@ export class MaskHighLight {
         }
     }
 
-    private LoadTexture(imagepath : string) : HTMLImageElement {
-        this._loadingImageCount++;
-
-        return GetImageOnTheFly(imagepath, () => {
-            this._loadingImageCount--;
-
-            if (this._loadingImageCount == 0)
-                this.LoadComplete = true;
+    private LoadTextures(texturePromise : Promise<HTMLImageElement>[]) {
+        return Promise.all(texturePromise).then(values => {            
+            return values;
         });
     }
 

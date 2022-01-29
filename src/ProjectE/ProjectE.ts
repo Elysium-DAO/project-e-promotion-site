@@ -63,7 +63,7 @@ class ProjectE extends WebGLCanvas{
     }
 
     async InitProcess(config: ProjectEConfig) {
-        this.maskHighlight.CacheMaskTexture();
+        await this.maskHighlight.CacheMaskTexture();
         await this.SetupWebglPipeline(config);
 
         //Draw the image in first frame
@@ -158,7 +158,7 @@ class ProjectE extends WebGLCanvas{
             commandCommand.textureAspectRatio = this._texAspectRatio;
             commandCommand.screenAspectRatio = this._screenAspectRatio;
 
-            if (this.maskHighlight.LoadComplete && commandCommand.mainColor[0] < 1)
+            if (commandCommand.mainColor[0] < 1)
                 commandCommand.mainColor[0] += 0.01;
 
             if (!this.maskHighlight.IsMobileDevice) {
