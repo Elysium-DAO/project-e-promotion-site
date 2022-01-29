@@ -63,7 +63,7 @@ class ProjectE extends WebGLCanvas{
     }
 
     async InitProcess(config: ProjectEConfig) {
-        await this.maskHighlight.CacheMaskTexture();
+        this.maskHighlight.CacheMaskTexture();
         await this.SetupWebglPipeline(config);
 
         //Draw the image in first frame
@@ -98,7 +98,7 @@ class ProjectE extends WebGLCanvas{
 
         this.UpdatePlaneVertex();
 
-        this.reglCanvasCommand  = await CreateCanvasREGLCommand(
+        this.reglCanvasCommand  = CreateCanvasREGLCommand(
             this._reglContext,
             this.mouseTrackFrameBuffer,
             maskMaterial.vertex_shader, 
@@ -114,7 +114,7 @@ class ProjectE extends WebGLCanvas{
             (this.maskHighlight.IsMobileDevice) ? 1 : 0,
             this._planeVertex.count);
 
-        this.reglFrameBufferCommand = await CreateFrameBufferCommand(
+        this.reglFrameBufferCommand = CreateFrameBufferCommand(
             this._reglContext,
             this.mouseTrackFrameBuffer,
             this.frameBufferTex,
@@ -138,11 +138,11 @@ class ProjectE extends WebGLCanvas{
             isMouseEnable: this.mouseAnimation.TouchVisibility,
             textureLerpValue: this.maskHighlight.LerpValue,
         }
+        let self = this;
 
         this._reglContext.frame(({time}) => {
 
             let clipPos = this.ScreenPositionToClipSpace(this.maskHighlight.inputInteractionType.mouse_screenpos_x, this.maskHighlight.inputInteractionType.mouse_screenpos_y);
-            let self = this;
 
             // clear contents of the drawing buffer
             this._reglContext.clear({

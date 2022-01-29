@@ -39,7 +39,7 @@ export class MaskHighLight {
         // console.log("Is Mobile Device "+ this.IsMobileDevice);
     }
 
-    public async CacheMaskTexture() {
+    public CacheMaskTexture() {
         this.maskTexType = (this.IsMobileDevice) ? this._config.mobile_textures : this._config.desktop_textures;
 
         this._noise_texture = this.LoadTexture(this._config.noise_tex_path);
