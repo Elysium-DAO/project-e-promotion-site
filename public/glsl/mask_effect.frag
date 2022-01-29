@@ -7,6 +7,7 @@ uniform float u_min_reveal_range;
 uniform float u_textureLerpValue;
 uniform float u_tex_aspect_ratio;
 uniform float u_is_mobile;
+uniform vec3 u_color;
 
 uniform sampler2D u_front_tex_a;
 uniform sampler2D u_highlight_tex_a;
@@ -44,7 +45,7 @@ void main() {
     float dist = 1.0 - distance(v_vertex, u_mousePos);
     float mousePosLerp = smoothstep(u_min_reveal_range, 1.0, dist) * u_isMouseEnable;
     float lerpMix = mix(easeMapTex.x, mousePosLerp, u_is_mobile);
-    vec4 revealCol = mix(targetFrontTex, targetHighlightTex, lerpMix);
+    vec4 revealCol = mix(targetFrontTex, targetHighlightTex, lerpMix) * u_color.r;
 
     //gl_FragColor = vec4(mousePosLerp, mousePosLerp, mousePosLerp, 1.0);
     gl_FragColor = revealCol;

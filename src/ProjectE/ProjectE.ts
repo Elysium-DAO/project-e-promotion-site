@@ -134,6 +134,7 @@ class ProjectE extends WebGLCanvas{
             screenAspectRatio: this._screenAspectRatio,
             time : 0,
             mousePos : [-1, -1],
+            mainColor : [0,0,0],
             isMouseEnable: this.mouseAnimation.TouchVisibility,
             textureLerpValue: this.maskHighlight.LerpValue,
         }
@@ -157,11 +158,11 @@ class ProjectE extends WebGLCanvas{
             commandCommand.textureAspectRatio = this._texAspectRatio;
             commandCommand.screenAspectRatio = this._screenAspectRatio;
 
-            if (!this.maskHighlight.IsMobileDevice) {
-                self.mouseTrackFrameBuffer.use(function() {
+            if (this.maskHighlight.LoadComplete && commandCommand.mainColor[0] < 1)
+                commandCommand.mainColor[0] += 0.01;
 
-                    self._reglContext.clear({color: self._blackColor, depth : 1});
-    
+            if (!this.maskHighlight.IsMobileDevice) {
+                self.mouseTrackFrameBuffer.use(function() {    
                     ExecuteREGLCommand(self._reglContext, self.reglFrameBufferCommand, commandCommand);
     
                     self.frameBufferTex({

@@ -1,5 +1,5 @@
 import {MaskTextureType, ProjectEConfig, InputInteractionType} from '../ProjectEType';
-import {IsMobileDevice, GetImagePromise, NormalizeByRange, Lerp, Clamp} from '../../Utility/UtilityMethod';
+import {IsMobileDevice, GetImagePromise, NormalizeByRange, Lerp, Clamp, GetImageOnTheFly} from '../../Utility/UtilityMethod';
 import REGL, { Framebuffer,Regl } from 'regl';
 
 export class MaskHighLight {
@@ -21,6 +21,8 @@ export class MaskHighLight {
     public Identifier : number = 0;
     public LerpValue : number = 0;
 
+    private _loadingImageCount = 0;
+    public LoadComplete : boolean = false;
 
     constructor(webgl:HTMLCanvasElement, config: ProjectEConfig) {
         this._config = config;
@@ -40,14 +42,14 @@ export class MaskHighLight {
     public async CacheMaskTexture() {
         this.maskTexType = (this.IsMobileDevice) ? this._config.mobile_textures : this._config.desktop_textures;
 
-        this._noise_texture = await GetImagePromise(this._config.noise_tex_path);
+        this._noise_texture = this.LoadTexture(this._config.noise_tex_path);
 
         this._front_textures = [];
         this._highlight_textures = [];
 
         for (let i = 0; i < this.maskTexType.count; i++) {
-            this._front_textures.push(await GetImagePromise(this.maskTexType.front_textures[i]));
-            this._highlight_textures.push(await GetImagePromise(this.maskTexType.highlight_textures[i])); 
+            this._front_textures.push(this.LoadTexture(this.maskTexType.front_textures[i]));
+            this._highlight_textures.push(this.LoadTexture(this.maskTexType.highlight_textures[i])); 
         }
     }
 
@@ -110,6 +112,17 @@ export class MaskHighLight {
             highlightTexA.subimage(currentTextureSet[1]);
             return;
         }
+    }
+
+    private LoadTexture(imagepath : string) : HTMLImageElement {
+        this._loadingImageCount++;
+
+        return GetImageOnTheFly(imagepath, () => {
+            this._loadingImageCount--;
+
+            if (this._loadingImageCount == 0)
+                this.LoadComplete = true;
+        });
     }
 
 

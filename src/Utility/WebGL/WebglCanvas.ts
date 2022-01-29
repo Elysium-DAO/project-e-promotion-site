@@ -32,9 +32,7 @@ abstract class WebglCanvas {
         let regl = await reglPromise;
 
         return regl.default({
-            canvas : webglDom,
-            extensions: 'OES_texture_float',
-
+            canvas : webglDom
             //attributes : {preserveDrawingBuffer : true}
         });
     }

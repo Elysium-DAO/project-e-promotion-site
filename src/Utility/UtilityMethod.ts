@@ -82,6 +82,18 @@ export function GetImagePromise(imagePath : string) {
     });
 }
 
+export function GetImageOnTheFly(imagePath : string, oncompleteCallback : () => void) {
+
+    const im = new Image();
+    im.crossOrigin = "anonymous";
+    im.src = imagePath;
+
+    im.onload = () => {
+        oncompleteCallback();
+    };
+    return im;
+}
+
 export function GetRelativeURL(url : string) {
     return (url.replace(/^(?:\/\/|[^/]+)*\//, ''));
 }
