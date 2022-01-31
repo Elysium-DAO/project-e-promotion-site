@@ -1,6 +1,7 @@
 
 import REGL, {Regl} from 'regl';
 import {IntVector2} from '../UniversalType';
+import {NormalizeByRange} from '../../Utility/UtilityMethod';
 
 const reglPromise = import('regl');
 
@@ -43,16 +44,11 @@ abstract class WebglCanvas {
 
     private SetCanvasToSceenSize(displayWidth : number, displayHeight : number) {
         //Set default to 2k resolution, if user has high spec digital screen
-  
-        if (displayWidth > this.maxDrawBufferSize || displayHeight > this.maxDrawBufferSize) {
-          displayHeight = (displayHeight > displayWidth) ? this.maxDrawBufferSize : (this.maxDrawBufferSize * displayHeight / displayWidth);
-          displayWidth = (displayWidth >= displayHeight) ? this.maxDrawBufferSize : (this.maxDrawBufferSize * displayWidth / displayHeight);
-        }
-  
-        //console.log(displayWidth +", " + displayHeight);
-  
-        this._webglDom.width = displayWidth;
-        this._webglDom.height = displayHeight;
+        let adjust_height = (this.maxDrawBufferSize * (displayHeight / displayWidth));
+        let adjust_width = (this.maxDrawBufferSize);
+
+        this._webglDom.width = adjust_width;
+        this._webglDom.height = adjust_height;
     }
 
     // Clip position is -1 to +1
